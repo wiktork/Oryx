@@ -18,7 +18,8 @@ RUN --mount=type=secret,id=vss_nuget_accesstoken,target=/run/secrets/vss_nuget_a
     dotnet tool install --tool-path /dotnetcore-tools dotnet-trace && \
     dotnet tool install --tool-path /dotnetcore-tools dotnet-dump && \
     dotnet tool install --tool-path /dotnetcore-tools dotnet-counters && \
-    dotnet tool install --tool-path /dotnetcore-tools dotnet-gcdump 
+    dotnet tool install --tool-path /dotnetcore-tools dotnet-gcdump && \
+    dotnet tool install --tool-path /dotnetcore-tools dotnet-monitor --version 10.*
 
 # Startup script generator
 FROM mcr.microsoft.com/oss/go/microsoft/golang:1.26-bookworm AS startupCmdGen
@@ -74,6 +75,7 @@ RUN apt-get update \
 ENV ASPNETCORE_URLS=http://+:80 \
     # Enable detection of running in a container
     DOTNET_RUNNING_IN_CONTAINER=true \
+    DOTNET_ROLL_FORWARD_TO_PRERELEASE=1 \
     PATH="/opt/dotnetcore-tools:${PATH}"
 
 COPY --from=tools-install /dotnetcore-tools /opt/dotnetcore-tools

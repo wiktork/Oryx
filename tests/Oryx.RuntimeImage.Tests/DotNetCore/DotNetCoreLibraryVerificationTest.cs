@@ -148,6 +148,28 @@ namespace Microsoft.Oryx.RuntimeImage.Tests
         }
 
         [Theory]
+        [Trait("category", "runtime-resolute")]
+        [InlineData("11.0")]
+        public void DotnetMonitorTool_RunsWithPrereleaseRollForwardInTheResoluteImage(string version)
+        {
+            var result = _dockerCli.Run(new DockerRunArguments
+            {
+                ImageId = _imageHelper.GetRuntimeImage("dotnetcore", version, ImageTestHelperConstants.OsTypeUbuntuResolute),
+                CommandToExecuteOnRun = "/bin/bash",
+                CommandArguments = new[] { "-c", "test \"$DOTNET_ROLL_FORWARD_TO_PRERELEASE\" = 1 && dotnet-monitor --version" },
+            });
+
+            var actualOutput = result.StdOut.ReplaceNewLine().Trim();
+            RunAsserts(
+                () =>
+                {
+                    Assert.True(result.IsSuccess);
+                    Assert.StartsWith("10.", actualOutput);
+                },
+                result.GetDebugInfo());
+        }
+
+        [Theory]
         [Trait("category", "runtime-noble")]
         [InlineData("10.0")]
         public void DotnetMonitorTool_IsPresentInTheNobleImage(string version)

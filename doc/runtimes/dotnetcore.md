@@ -49,6 +49,9 @@ extension is used. For example, if your app includes a file
 The startup command can be set manually as described in
 [`appservice.md`](../hosts/appservice.md#startup-file).
 
+The .NET 11 runtime image includes the latest dotnet-monitor 10 release and sets
+`DOTNET_ROLL_FORWARD_TO_PRERELEASE=1` so the tool can run on the .NET 11 preview runtime.
+
 # Version support
 
 .NET Core follows a [release support policy][] which includes Long-Term Support
